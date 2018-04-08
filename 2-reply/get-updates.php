@@ -25,7 +25,11 @@ if(isset($dati->result[0])) {
     if(isset($dati->result[0]->message->text)) {
         echo "Messaggio di testo: {$dati->result[0]->message->text}\n";
     }
-
+	$chatId = $dati->result[0]->message->chat->id;
+	
     // Memorizziamo il nuovo ID nel file
-    file_put_contents($last_update_filename, $update_id);
+    file_put_contents($last_update_filename, $update_id);S
+	
+	http_request("https://api.telegram.org/bot{$token}/sendMessage?chat_id=". $chatId ."&text=Heyla!");
 }
+
