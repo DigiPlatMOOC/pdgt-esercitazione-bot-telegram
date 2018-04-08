@@ -19,6 +19,9 @@ $dati = http_request("https://api.telegram.org/bot{$token}/getUpdates?offset=" .
 print_r($dati);
 
 if(isset($dati->result[0])) {
+    // Recupero "memoria"
+    $memory = json_decode(file_get_contents("memory.json"));
+
     $update_id = $dati->result[0]->update_id;
 
     $chat_id = $dati->result[0]->message->chat->id;
@@ -29,15 +32,24 @@ if(isset($dati->result[0])) {
         $text = "";
     }
 
-    // $chat_id contiene l'ID della conversazione
-    // $text l'eventuale testo inviato
+    $user_id = $dati->result[0]->message->from->id;
+    $chat_id = $dati->result[0]->message->chat->id;
+    $text = $dati->result[0]->message->text;
 
-    if(/* utente ha inviato un messaggio precedente */) {
-        // Invia messaggio precedente
+    if(isset($memory->$chat_id->$user_id)) {
+        // Mando il messaggio memorizzato
+        $msg = $memory->$chat_id->$user_id;
+        http_request("https://api.telegram.org/bot{$token}/sendMessage?chat_id={$chat_id}&text={$msg}");
     }
     else {
-        // Benvenuto
-        // Memorizza $text
+        // Mando messaggio di benvenuto
+        $name = $dati->result[0]->message->from->first_name;
+        $msg = "Welcome ".$name."!";
+        http_request("https://api.telegram.org/bot{$token}/sendMessage?chat_id={$chat_id}&text={$msg}");
+        $memory->$chat_id->$user_id = $text;
+
+        // Archivio "memoria"
+        file_put_contents("memory.json", json_encode($memory));
     }
 
     // Memorizziamo il nuovo ID nel file
