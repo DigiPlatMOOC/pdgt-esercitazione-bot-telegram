@@ -29,7 +29,7 @@ if(isset($dati->result[0])) {
     // Memorizziamo il nuovo ID nel file
     file_put_contents($last_update_filename, $update_id);
 
-    $chat_id = $dati->result[0]->message->from->id;
+    $chat_id = $dati->result[0]->message->chat->id;
     $text = $dati->result[0]->message->text;
 
     // Rispondo al messaggio
