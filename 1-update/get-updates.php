@@ -4,7 +4,12 @@ if(!isset($token)) {
     die("Token non impostato, creare un file token.php nella cartella root come scritto nella prima esercitazione\n");
 }
 
-$url = "https://api.telegram.org/bot{$token}/getUpdates?limit=1";
+// Prendo l'ultimo update_id
+$update_id = file_get_contents("last-update-id.txt");
+if(!isset($update_id))
+    $update_id = -1;
+
+$url = "https://api.telegram.org/bot{$token}/getUpdates?offset={$update_id}&limit=1";
 
 $handle = curl_init($url);
 if($handle == false) {
@@ -32,3 +37,7 @@ if(isset($dati->result[0])) {
     // Abbiamo un aggiornamento
     echo "ID aggiornamento: {$dati->result[0]->update_id}\n";
 }
+
+// Scrivo il prossimo update_id (se esiste)
+if(isset($dati->result[0]->update_id))
+    file_put_contents("last-update-id.txt", ($dati->result[0]->update_id) + 1);
