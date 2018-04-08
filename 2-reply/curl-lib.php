@@ -1,7 +1,8 @@
 <?php
 // Semplice libreria per le creazione di richieste HTTP
 
-function http_request($url) {
+function http_request($url) 
+{
     $handle = curl_init($url);
     if($handle == false) {
         die("Ops, cURL non funziona\n");
@@ -23,3 +24,5 @@ function http_request($url) {
     // Decodifica della risposta JSON
     return json_decode($response);
 }
+
+?>

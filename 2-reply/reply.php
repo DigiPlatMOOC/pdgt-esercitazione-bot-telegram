@@ -1,4 +1,5 @@
-<?php
+<?php  
+
 require_once(dirname(__FILE__) . '/../token.php');
 require_once(dirname(__FILE__) . '/curl-lib.php');
 
@@ -17,18 +18,24 @@ else
     $last_update = 0;
 }
 
-$dati = http_request("https://api.telegram.org/bot{$token}/getUpdates?offset=" . ($last_update + 1));
-print_r($dati);
+$data = http_request("https://api.telegram.org/bot{$token}/getUpdates?offset=" . ($last_update + 1));
 
-if(isset($dati->result[0])) 
+if(isset($data->result[0])) 
 {
-    $update_id = $dati->result[0]->update_id;
+    $update_id = $data->result[0]->update_id;
+    $userName = $data->result[0]->message->from->first_name;
+    $chatID = $data->result[0]->message->chat->id;
 
-    // Facciamo qualcosa con l'update?
-    if(isset($dati->result[0]->message->text)) {
-        echo "Messaggio di testo: {$dati->result[0]->message->text}\n";
-    }
+    $testo = "Ciao, " . $userName . "! Come va?";
+	$dati = http_request("https://api.telegram.org/bot{$token}/sendMessage?chat_id={$chatID}&text=".urlencode($testo));
+
 
     // Memorizziamo il nuovo ID nel file
     file_put_contents($last_update_filename, $update_id);
 }
+else
+die("prima di procedere invia un messaggio al bot\n");
+
+
+
+?>
