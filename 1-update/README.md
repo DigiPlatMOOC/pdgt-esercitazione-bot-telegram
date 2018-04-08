@@ -1,4 +1,4 @@
-# Ricevere aggiornamenti dal Bot
+# Ricevere aggiornamenti dal bot
 
 ## Introduzione
 
